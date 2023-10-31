@@ -1,4 +1,4 @@
-module github.com/zapscloud/golib-business-repository.git
+module github.com/zapscloud/golib-business-repository
 
 go 1.20
 
