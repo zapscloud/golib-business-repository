@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/zapscloud/golib-business-repository.git/business_common"
+	"github.com/zapscloud/golib-business-repository/business_common"
 	"github.com/zapscloud/golib-dbutils/db_common"
 	"github.com/zapscloud/golib-dbutils/mongo_utils"
 	"github.com/zapscloud/golib-utils/utils"
