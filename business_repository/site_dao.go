@@ -1,7 +1,7 @@
 package business_repository
 
 import (
-	"github.com/zapscloud/golib-business/business_repository/mongodb_repository"
+	"github.com/zapscloud/golib-business-repository/business_repository/mongodb_repository"
 	"github.com/zapscloud/golib-dbutils/db_common"
 	"github.com/zapscloud/golib-utils/utils"
 )

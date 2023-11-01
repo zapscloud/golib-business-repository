@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/zapscloud/golib-dbutils/db_common"
-	"github.com/zapscloud/golib-platform/platform_common"
+	"github.com/zapscloud/golib-platform-repository/platform_common"
 )
 
 // Business module tables =================================
