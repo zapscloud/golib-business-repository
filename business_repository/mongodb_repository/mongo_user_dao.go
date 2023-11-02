@@ -209,6 +209,8 @@ func (p *UserMongoDBDao) Create(indata utils.Map) (utils.Map, error) {
 	if err != nil {
 		return utils.Map{}, err
 	}
+	log.Println("======================================================", business_common.DbBusinessUsers)
+	log.Println("======================================================", collection)
 	// Add Fields for Create
 	indata = db_common.AmendFldsforCreate(indata)
 
