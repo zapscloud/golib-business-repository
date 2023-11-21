@@ -30,8 +30,9 @@ const (
 	FLD_BUSINESS_EMAILID  = platform_common.FLD_BUSINESS_EMAILID
 	FLD_BUSINESS_TIMEZONE = "business_timezone"
 
-	FLD_USER_ID    = platform_common.FLD_APP_USER_ID
-	FLD_USER_ROLES = "user_roles"
+	FLD_USER_ID                = platform_common.FLD_APP_USER_ID
+	FLD_IS_USER_BUSINESS_ADMIN = "is_user_business_admin"
+	FLD_USER_ROLES             = "user_roles"
 
 	FLD_ROLE_ID   = platform_common.FLD_APP_ROLE_ID
 	FLD_ROLE_NAME = platform_common.FLD_APP_ROLE_NAME

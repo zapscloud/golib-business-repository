@@ -3,7 +3,7 @@ module github.com/zapscloud/golib-business-repository
 go 1.20
 
 require (
-	github.com/zapscloud/golib-dbutils v1.1.1-0.20231016071702-b6e244391427
+	github.com/zapscloud/golib-dbutils v1.1.1-0.20231102092500-6b81e3531d53
 	github.com/zapscloud/golib-platform-repository v0.0.0-20231031103720-b9f32a0e966a
 	github.com/zapscloud/golib-utils v1.0.1-0.20231013125100-bb65f5737443
 	go.mongodb.org/mongo-driver v1.12.1
