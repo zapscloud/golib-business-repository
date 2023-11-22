@@ -211,7 +211,7 @@ func (p *UserMongoDBDao) Get(userid string) (utils.Map, error) {
 	// Remove fields from result
 	result = db_common.AmendFldsForGet(result)
 
-	log.Printf("SectionMongoDBDao::GetDetails:: End Found a single document: %+v\n", result)
+	log.Println("UserDBDao::Get:: End Found a single document: \n", err)
 	return result, nil
 }
 
