@@ -170,34 +170,48 @@ func (p *UserMongoDBDao) List(filter string, sort string, skip int64, limit int6
 func (p *UserMongoDBDao) Get(userid string) (utils.Map, error) {
 	// Find a single document
 	var result utils.Map
-
+	stages := []bson.M{}
 	log.Println("UserDBDao::Get:: Begin ", userid)
 
 	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessUsers)
+	if err != nil {
+		return nil, err
+	}
 	log.Println("Find:: Got Collection ")
 
-	filter := bson.D{{Key: business_common.FLD_USER_ID, Value: userid}, {}}
+	filter := bson.D{{Key: business_common.FLD_USER_ID, Value: userid},
+		{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID},
+		{Key: db_common.FLD_IS_DELETED, Value: false}}
 
-	filter = append(filter,
-		bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID},
-		bson.E{Key: db_common.FLD_IS_DELETED, Value: false})
+	matchStage := bson.M{db_common.MONGODB_MATCH: filter}
+	stages = append(stages, matchStage)
 
-	log.Println("Get:: Got filter ", filter)
+	// Append Lookups
+	stages = p.appendListLookups(stages)
 
-	singleResult := collection.FindOne(ctx, filter)
-	if singleResult.Err() != nil {
-		log.Println("Get:: Record not found ", singleResult.Err())
-		return result, singleResult.Err()
-	}
-	singleResult.Decode(&result)
+	// Aggregate the stages
+	singleResult, err := collection.Aggregate(ctx, stages)
 	if err != nil {
+		log.Println("GetDetails:: Error in aggregation: ", err)
+		return result, err
+	}
+
+	if !singleResult.Next(ctx) {
+		// No matching document found
+		log.Println("GetDetails:: Record not found")
+		err := &utils.AppError{ErrorCode: "S30102", ErrorMsg: "Record Not Found", ErrorDetail: "Given UserID is not found"}
+		return result, err
+	}
+
+	if err := singleResult.Decode(&result); err != nil {
 		log.Println("Error in decode", err)
 		return result, err
 	}
+
 	// Remove fields from result
 	result = db_common.AmendFldsForGet(result)
 
-	log.Println("UserDBDao::Get:: End Found a single document: \n", err)
+	log.Printf("SectionMongoDBDao::GetDetails:: End Found a single document: %+v\n", result)
 	return result, nil
 }
 
