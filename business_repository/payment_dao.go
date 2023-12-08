@@ -6,35 +6,26 @@ import (
 	"github.com/zapscloud/golib-utils/utils"
 )
 
-// AdvertisementDao - Card DAO Repository
+// PaymentDao - Card DAO Repository
 type PaymentDao interface {
 	// InitializeDao
 	InitializeDao(client utils.Map, businessId string)
-
-	// List
+	//List - List all Collections
 	List(filter string, sort string, skip int64, limit int64) (utils.Map, error)
-
 	// Get - Get Payment Details
-	Get(paymentid string) (utils.Map, error)
-
-	// Find - Find by code
+	Get(paymentId string) (utils.Map, error)
+	// Find - Find by filter
 	Find(filter string) (utils.Map, error)
-
 	// Create - Create Payment
 	Create(indata utils.Map) (utils.Map, error)
-
 	// Update - Update Collection
-	Update(paymentid string, indata utils.Map) (utils.Map, error)
-
+	Update(paymentId string, indata utils.Map) (utils.Map, error)
 	// Delete - Delete Collection
-	Delete(paymentid string) (int64, error)
-
-	// // DeleteAll - Delete All Collection
-	// DeleteAll() (int64, error)
+	Delete(paymentId string) (int64, error)
 }
 
-// NewPaymentDao - Contruct Payment Dao
-func NewPaymentDao(client utils.Map, businessid string) PaymentDao {
+// NewPaymentDao - Contruct Business Payment Dao
+func NewPaymentDao(client utils.Map, business_id string) PaymentDao {
 	var daoPayment PaymentDao = nil
 
 	// Get DatabaseType and no need to validate error
@@ -52,7 +43,7 @@ func NewPaymentDao(client utils.Map, businessid string) PaymentDao {
 
 	if daoPayment != nil {
 		// Initialize the Dao
-		daoPayment.InitializeDao(client, businessid)
+		daoPayment.InitializeDao(client, business_id)
 	}
 
 	return daoPayment

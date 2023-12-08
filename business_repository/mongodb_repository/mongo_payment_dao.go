@@ -15,7 +15,7 @@ import (
 // PaymentMongoDBDao - Payment DAO Repository
 type PaymentMongoDBDao struct {
 	client     utils.Map
-	businessID string
+	businessId string
 }
 
 func init() {
@@ -25,16 +25,16 @@ func init() {
 func (p *PaymentMongoDBDao) InitializeDao(client utils.Map, businessId string) {
 	log.Println("Initialize Payment Mongodb DAO")
 	p.client = client
-	p.businessID = businessId
+	p.businessId = businessId
 }
 
 // List - List all Collections
 func (p *PaymentMongoDBDao) List(filter string, sort string, skip int64, limit int64) (utils.Map, error) {
 	var results []utils.Map
 
-	log.Println("Begin - Find All Collection Dao", business_common.DbBusinessPayment)
+	log.Println("Begin - Find All Collection Dao", business_common.DbBusinessPayments)
 
-	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayment)
+	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayments)
 	if err != nil {
 		return nil, err
 	}
@@ -72,10 +72,10 @@ func (p *PaymentMongoDBDao) List(filter string, sort string, skip int64, limit i
 		log.Println(filterdoc)
 		opts.SetLimit(limit)
 	}
-
 	filterdoc = append(filterdoc,
-		bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID},
+		bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessId},
 		bson.E{Key: db_common.FLD_IS_DELETED, Value: false})
+
 	log.Println("Parameter values ", filterdoc, opts)
 	cursor, err := collection.Find(ctx, filterdoc, opts)
 	if err != nil {
@@ -88,17 +88,13 @@ func (p *PaymentMongoDBDao) List(filter string, sort string, skip int64, limit i
 		return nil, err
 	}
 
-	log.Println("End - Find All Collection Dao", results)
-
 	listdata := []utils.Map{}
-	for idx, value := range results {
-		log.Println("Item ", idx)
+	for _, value := range results {
+		// log.Println("Item ", idx)
 		// Remove fields from result
 		value = db_common.AmendFldsForGet(value)
 		listdata = append(listdata, value)
 	}
-
-	log.Println("End - Find All Collection Dao", listdata)
 
 	log.Println("Parameter values ", filterdoc)
 	filtercount, err := collection.CountDocuments(ctx, filterdoc)
@@ -107,7 +103,7 @@ func (p *PaymentMongoDBDao) List(filter string, sort string, skip int64, limit i
 	}
 
 	basefilterdoc := bson.D{
-		{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID},
+		{Key: business_common.FLD_BUSINESS_ID, Value: p.businessId},
 		{Key: db_common.FLD_IS_DELETED, Value: false}}
 	totalcount, err := collection.CountDocuments(ctx, basefilterdoc)
 	if err != nil {
@@ -124,25 +120,25 @@ func (p *PaymentMongoDBDao) List(filter string, sort string, skip int64, limit i
 	}
 
 	return response, nil
-
 }
 
-// Get - Get Payment details
-func (p *PaymentMongoDBDao) Get(Paymentid string) (utils.Map, error) {
-	// Find a single document
+// Get - Get by code
+func (p *PaymentMongoDBDao) Get(paymentId string) (utils.Map, error) {
+	// Get a single document
 	var result utils.Map
 
-	log.Println("PaymentDBDao::Get:: Begin ", Paymentid)
+	log.Println("PaymentMongoDBDao::Get:: Begin ", paymentId)
 
-	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayment)
-	log.Println("Find:: Got Collection ")
+	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayments)
+	log.Println("Get:: Got Collection ")
 
-	filter := bson.D{{Key: business_common.FLD_PAYMENT_ID, Value: Paymentid}, {}}
+	filter := bson.D{{Key: business_common.FLD_PAYMENT_ID, Value: paymentId}, {}}
 
-	filter = append(filter, bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID})
+	filter = append(filter,
+		bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessId},
+		bson.E{Key: db_common.FLD_IS_DELETED, Value: false})
 
 	log.Println("Get:: Got filter ", filter)
-
 	singleResult := collection.FindOne(ctx, filter)
 	if singleResult.Err() != nil {
 		log.Println("Get:: Record not found ", singleResult.Err())
@@ -153,21 +149,22 @@ func (p *PaymentMongoDBDao) Get(Paymentid string) (utils.Map, error) {
 		log.Println("Error in decode", err)
 		return result, err
 	}
+
 	// Remove fields from result
 	result = db_common.AmendFldsForGet(result)
 
-	log.Println("PaymentDBDao::Get:: End Found a single document: \n", err)
+	log.Printf("Business PaymentMongoDBDao::Get:: End Found a single document\n")
 	return result, nil
 }
 
-// Find - Find by code
+// Find - Find by Filter
 func (p *PaymentMongoDBDao) Find(filter string) (utils.Map, error) {
 	// Find a single document
 	var result utils.Map
 
 	log.Println("PaymentDBDao::Find:: Begin ", filter)
 
-	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayment)
+	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayments)
 	log.Println("Find:: Got Collection ", err)
 
 	bfilter := bson.D{}
@@ -176,7 +173,7 @@ func (p *PaymentMongoDBDao) Find(filter string) (utils.Map, error) {
 		fmt.Println("Error on filter Unmarshal", err)
 	}
 	bfilter = append(bfilter,
-		bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID},
+		bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessId},
 		bson.E{Key: db_common.FLD_IS_DELETED, Value: false})
 
 	log.Println("Find:: Got filter ", bfilter)
@@ -201,103 +198,75 @@ func (p *PaymentMongoDBDao) Find(filter string) (utils.Map, error) {
 // Create - Create Collection
 func (p *PaymentMongoDBDao) Create(indata utils.Map) (utils.Map, error) {
 
-	log.Println("Business Payment Save - Begin", indata)
-	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayment)
+	log.Println("Payment Save - Begin", indata)
+
+	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayments)
 	if err != nil {
+		log.Println("Error in insert ", err)
 		return utils.Map{}, err
 	}
 	// Add Fields for Create
 	indata = db_common.AmendFldsforCreate(indata)
 
-	// Insert a single document
-	insertResult, err := collection.InsertOne(ctx, indata)
+	insertResult1, err := collection.InsertOne(ctx, indata)
 	if err != nil {
 		log.Println("Error in insert ", err)
-		return indata, err
-	}
+		return utils.Map{}, err
 
-	log.Println("Inserted a single document: ", insertResult.InsertedID)
+	}
+	log.Println("Inserted a single document: ", insertResult1.InsertedID)
 	log.Println("Save - End", indata[business_common.FLD_PAYMENT_ID])
 
-	return indata, err
+	return p.Get(indata[business_common.FLD_PAYMENT_ID].(string))
 }
 
 // Update - Update Collection
-func (p *PaymentMongoDBDao) Update(Paymentid string, indata utils.Map) (utils.Map, error) {
+func (p *PaymentMongoDBDao) Update(paymentId string, indata utils.Map) (utils.Map, error) {
 
 	log.Println("Update - Begin")
-	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayment)
+
+	
+	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayments)
 	if err != nil {
 		return utils.Map{}, err
 	}
 	// Modify Fields for Update
 	indata = db_common.AmendFldsforUpdate(indata)
-
-	// Update a single document
 	log.Printf("Update - Values %v", indata)
 
-	filter := bson.D{{Key: business_common.FLD_PAYMENT_ID, Value: Paymentid}}
-	filter = append(filter, bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID})
-
-	updateResult, err := collection.UpdateOne(ctx, filter, bson.D{{Key: "$set", Value: indata}})
+	filterPayment := bson.D{{Key: business_common.FLD_PAYMENT_ID, Value: paymentId}}
+	updateResult1, err := collection.UpdateOne(ctx, filterPayment, bson.D{{Key: "$set", Value: indata}})
 	if err != nil {
 		return utils.Map{}, err
 	}
-	log.Println("Update a single document: ", updateResult.ModifiedCount)
+	log.Println("Update a single document: ", updateResult1.ModifiedCount)
 
 	log.Println("Update - End")
-	return p.Get(Paymentid)
+	return p.Get(paymentId)
 }
 
 // Delete - Delete Collection
-func (p *PaymentMongoDBDao) Delete(Paymentid string) (int64, error) {
+func (p *PaymentMongoDBDao) Delete(paymentId string) (int64, error) {
 
-	log.Println("PaymentDBDao::Delete - Begin ", Paymentid)
+	log.Println("PaymentMongoDBDao::Delete - Begin ", paymentId)
 
-	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayment)
+
+	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayments)
 	if err != nil {
 		return 0, err
 	}
-	opts := options.Delete().SetCollation(&options.Collation{
+	optsPayment := options.Delete().SetCollation(&options.Collation{
 		Locale:    db_common.LOCALE,
 		Strength:  1,
 		CaseLevel: false,
 	})
 
-	filter := bson.D{{Key: business_common.FLD_PAYMENT_ID, Value: Paymentid}}
-	filter = append(filter, bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID})
-
-	res, err := collection.DeleteOne(ctx, filter, opts)
+	filterPayment := bson.D{{Key: business_common.FLD_PAYMENT_ID, Value: paymentId}}
+	resPayment, err := collection.DeleteOne(ctx, filterPayment, optsPayment)
 	if err != nil {
 		log.Println("Error in delete ", err)
 		return 0, err
 	}
-	log.Printf("PaymentDBDao::Delete - End deleted %v documents\n", res.DeletedCount)
-	return res.DeletedCount, nil
+	log.Printf("PaymentMongoDBDao::Delete - End deleted %v documents\n", resPayment.DeletedCount)
+	return resPayment.DeletedCount, nil
 }
-
-// // Delete - Delete Collection
-// func (p *PaymentMongoDBDao) DeleteAll() (int64, error) {
-
-// 	log.Println("PaymentDBDao::DeleteAll - Begin ")
-
-// 	collection, ctx, err := mongo_utils.GetMongoDbCollection(p.client, business_common.DbBusinessPayment)
-// 	if err != nil {
-// 		return 0, err
-// 	}
-// 	opts := options.Delete().SetCollation(&options.Collation{
-// 		Locale:    db_common.LOCALE,
-// 		Strength:  1,
-// 		CaseLevel: false,
-// 	})
-
-// 	filter := bson.M{business_common.FLD_BUSINESS_ID: p.businessID}
-
-// 	res, err := collection.DeleteMany(ctx, filter, opts)
-// 	if err != nil {
-// 		log.Println("Error in delete ", err)
-// 		return 0, err
-// 	}
-// 	log.Printf("PaymentDBDao::Delete - End deleted %v documents\n", res.DeletedCount)
-// 	return res.DeletedCount, nil
-// }
