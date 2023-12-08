@@ -21,6 +21,7 @@ const (
 	DbBusinessUsers    = DbPrefix + "business_users"
 
 	DbBusinessUserTypes = DbPrefix + "business_user_types"
+	DbBusinessPayment   = DbPrefix + "business_payments"
 )
 
 // Business module table fields
@@ -47,6 +48,8 @@ const (
 	FLD_USERTYPE_ID   = "usertype_id"
 	FLD_USERTYPE_NAME = "usertype_name"
 	FLD_USERTYPE_DESC = "usertype_desc"
+
+	FLD_PAYMENT_ID = "payment_id"
 )
 
 const (
