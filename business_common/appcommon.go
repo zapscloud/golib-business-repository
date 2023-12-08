@@ -20,8 +20,9 @@ const (
 	DbBusinessRoles    = DbPrefix + "business_roles"
 	DbBusinessUsers    = DbPrefix + "business_users"
 
-	DbBusinessUserTypes = DbPrefix + "business_user_types"
-	DbBusinessPayments  = DbPrefix + "business_payments"
+	DbBusinessUserTypes   = DbPrefix + "business_user_types"
+	DbBusinessPayments    = DbPrefix + "business_payments"
+	DbBusinessPaymentTxns = DbPrefix + "business_payment_txns"
 )
 
 // Business module table fields
@@ -51,6 +52,10 @@ const (
 
 	FLD_PAYMENT_ID   = "payment_id"
 	FLD_PAYMENT_NAME = "payment_name"
+
+	FLD_PAYMENT_TXN_ID = "payment_txn_id"
+
+	FLD_DATETIME = "datetime"
 )
 
 const (
