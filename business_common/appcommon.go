@@ -55,7 +55,7 @@ const (
 
 	FLD_PAYMENT_TXN_ID = "payment_txn_id"
 
-	FLD_DATETIME = "datetime"
+	FLD_DATE_TIME = "date_time"
 )
 
 const (

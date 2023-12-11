@@ -13,15 +13,15 @@ type PaymentTxnDao interface {
 	//List - List all Collections
 	List(filter string, sort string, skip int64, limit int64) (utils.Map, error)
 	// Get - Get Payment Details
-	Get(paymenttxnId string) (utils.Map, error)
+	Get(paymentTxnId string) (utils.Map, error)
 	// Find - Find by filter
 	Find(filter string) (utils.Map, error)
 	// Create - Create Payment
 	Create(indata utils.Map) (utils.Map, error)
 	// Update - Update Collection
-	Update(paymenttxnId string, indata utils.Map) (utils.Map, error)
+	Update(paymentTxnId string, indata utils.Map) (utils.Map, error)
 	// Delete - Delete Collection
-	Delete(paymenttxnId string) (int64, error)
+	Delete(paymentTxnId string) (int64, error)
 }
 
 // NewPaymentTxnDao - Contruct Business Payment Dao
