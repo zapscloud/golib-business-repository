@@ -7,6 +7,8 @@ import (
 	"github.com/zapscloud/golib-business-repository/business_common"
 	"github.com/zapscloud/golib-dbutils/db_common"
 	"github.com/zapscloud/golib-dbutils/mongo_utils"
+	"github.com/zapscloud/golib-hr-repository/hr_common"
+	"github.com/zapscloud/golib-platform-repository/platform_common"
 	"github.com/zapscloud/golib-utils/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -341,18 +343,117 @@ func (p *UserMongoDBDao) appendListLookups(stages []bson.M) []bson.M {
 			db_common.MONGODB_STR_FOREIGNFIELD: business_common.FLD_ROLE_ID,
 			db_common.MONGODB_STR_AS:           business_common.FLD_ROLD_INFO,
 			db_common.MONGODB_STR_PIPELINE: []bson.M{
+				// Match BusinessId
+				{db_common.MONGODB_MATCH: bson.M{
+					business_common.FLD_BUSINESS_ID: p.businessID,
+				}},
 				// Remove following fields from result-set
 				{db_common.MONGODB_PROJECT: bson.M{
-					db_common.FLD_DEFAULT_ID:        0,
-					db_common.FLD_IS_DELETED:        0,
-					db_common.FLD_CREATED_AT:        0,
-					db_common.FLD_UPDATED_AT:        0,
-					business_common.FLD_BUSINESS_ID: 0}},
+					db_common.FLD_DEFAULT_ID: 0,
+					db_common.FLD_IS_DELETED: 0,
+					db_common.FLD_CREATED_AT: 0,
+					db_common.FLD_UPDATED_AT: 0,
+				}},
 			},
 		},
 	}
 	// Add it to Aggregate Stage Shift
 	stages = append(stages, lookupStage)
+
+	// Lookup Stage for HR staff ==========================================
+	lookupStage = bson.M{
+		db_common.MONGODB_LOOKUP: bson.M{
+			db_common.MONGODB_STR_FROM:         hr_common.DbHrStaffs,
+			db_common.MONGODB_STR_LOCALFIELD:   platform_common.FLD_APP_USER_ID,
+			db_common.MONGODB_STR_FOREIGNFIELD: hr_common.FLD_STAFF_ID,
+			db_common.MONGODB_STR_AS:           business_common.FLD_HR_STAFF_INFO,
+			db_common.MONGODB_STR_PIPELINE: []bson.M{
+				// Match BusinessId
+				{db_common.MONGODB_MATCH: bson.M{
+					business_common.FLD_BUSINESS_ID: p.businessID,
+				}},
+				// Remove following fields from result-set
+				{db_common.MONGODB_PROJECT: bson.M{
+					db_common.FLD_DEFAULT_ID: 0,
+					db_common.FLD_IS_DELETED: 0,
+					db_common.FLD_CREATED_AT: 0,
+					db_common.FLD_UPDATED_AT: 0}},
+			},
+		},
+	}
+	// //Add it to Aggregate Stage
+	stages = append(stages, lookupStage)
+
+	// Lookup Stage for Department ==========================================
+	lookupStage = bson.M{
+		db_common.MONGODB_LOOKUP: bson.M{
+			db_common.MONGODB_STR_FROM:         hr_common.DbHrDepartments,
+			db_common.MONGODB_STR_LOCALFIELD:   business_common.FLD_HR_STAFF_INFO + "." + hr_common.FLD_STAFF_DATA + "." + hr_common.FLD_DEPARTMENT_ID,
+			db_common.MONGODB_STR_FOREIGNFIELD: hr_common.FLD_DEPARTMENT_ID,
+			db_common.MONGODB_STR_AS:           business_common.FLD_DEPARTMENT_INFO,
+			db_common.MONGODB_STR_PIPELINE: []bson.M{
+				// Match BusinessId
+				{db_common.MONGODB_MATCH: bson.M{
+					business_common.FLD_BUSINESS_ID: p.businessID,
+				}},
+				// Remove following fields from result-set
+				{db_common.MONGODB_PROJECT: bson.M{
+					db_common.FLD_DEFAULT_ID: 0,
+					db_common.FLD_IS_DELETED: 0,
+					db_common.FLD_CREATED_AT: 0,
+					db_common.FLD_UPDATED_AT: 0}},
+			},
+		},
+	}
+	// //Add it to Aggregate Stage
+	stages = append(stages, lookupStage)
+
+	// Lookup Stage for Positions ==========================================
+	lookupStage = bson.M{
+		db_common.MONGODB_LOOKUP: bson.M{
+			db_common.MONGODB_STR_FROM:         hr_common.DbHrPositions,
+			db_common.MONGODB_STR_LOCALFIELD:   business_common.FLD_HR_STAFF_INFO + "." + hr_common.FLD_STAFF_DATA + "." + hr_common.FLD_POSITION_ID,
+			db_common.MONGODB_STR_FOREIGNFIELD: hr_common.FLD_POSITION_ID,
+			db_common.MONGODB_STR_AS:           business_common.FLD_POSITION_INFO,
+			db_common.MONGODB_STR_PIPELINE: []bson.M{
+				// Match BusinessId
+				{db_common.MONGODB_MATCH: bson.M{
+					business_common.FLD_BUSINESS_ID: p.businessID,
+				}},
+				// Remove following fields from result-set
+				{db_common.MONGODB_PROJECT: bson.M{
+					db_common.FLD_DEFAULT_ID: 0,
+					db_common.FLD_IS_DELETED: 0,
+					db_common.FLD_CREATED_AT: 0,
+					db_common.FLD_UPDATED_AT: 0}},
+			},
+		},
+	}
+	// //Add it to Aggregate Stage
+	stages = append(stages, lookupStage)
+
+	// Lookup Stage for Designations ==========================================
+	lookupStage = bson.M{
+		db_common.MONGODB_LOOKUP: bson.M{
+			db_common.MONGODB_STR_FROM:         hr_common.DbHrDesignations,
+			db_common.MONGODB_STR_LOCALFIELD:   business_common.FLD_HR_STAFF_INFO + "." + hr_common.FLD_STAFF_DATA + "." + hr_common.FLD_DESIGNATION_ID,
+			db_common.MONGODB_STR_FOREIGNFIELD: hr_common.FLD_DESIGNATION_ID,
+			db_common.MONGODB_STR_AS:           business_common.FLD_DESIGNATION_INFO,
+			db_common.MONGODB_STR_PIPELINE: []bson.M{
+				// Match BusinessId
+				{db_common.MONGODB_MATCH: bson.M{
+					business_common.FLD_BUSINESS_ID: p.businessID,
+				}},
+				// Remove following fields from result-set
+				{db_common.MONGODB_PROJECT: bson.M{
+					db_common.FLD_DEFAULT_ID: 0,
+					db_common.FLD_IS_DELETED: 0,
+					db_common.FLD_CREATED_AT: 0,
+					db_common.FLD_UPDATED_AT: 0}},
+			},
+		},
+	}
+	// //Add it to Aggregate Stage
 
 	return stages
 }

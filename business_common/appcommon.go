@@ -61,8 +61,13 @@ const (
 const (
 	DEF_BUSINESS_TIMEZONE = "Asia/Calcutta"
 
-	FLD_USER_INFO      = "user_info"
-	FLD_ROLD_INFO      = "role_info"
+	FLD_USER_INFO        = "user_info"
+	FLD_ROLD_INFO        = "role_info"
+	FLD_DEPARTMENT_INFO  = "department_info"
+	FLD_DESIGNATION_INFO = "designation_info"
+	FLD_POSITION_INFO    = "position_info"
+	FLD_HR_STAFF_INFO    = "hr_staff_info"
+
 	FLD_FILTERED_COUNT = "filtered_count"
 )
 
