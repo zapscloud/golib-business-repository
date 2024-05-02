@@ -455,7 +455,7 @@ func (p *UserMongoDBDao) appendListLookups(stages []bson.M) []bson.M {
 	}
 	// //Add it to Aggregate Stage
 
-	
+	stages = append(stages, lookupStage)
 
 	return stages
 }
