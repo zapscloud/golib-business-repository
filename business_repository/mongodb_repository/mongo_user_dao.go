@@ -60,6 +60,10 @@ func (p *UserMongoDBDao) List(filter string, sort string, skip int64, limit int6
 	unsetStage := bson.M{db_common.MONGODB_UNSET: db_common.FLD_DEFAULT_ID}
 	stages = append(stages, unsetStage)
 
+	// Add Lookup stages ================================
+	stages = p.appendListLookups(stages)
+	// ==================================================
+
 	// Match Stage ==================================
 	filterdoc = append(filterdoc,
 		bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID},
@@ -67,10 +71,6 @@ func (p *UserMongoDBDao) List(filter string, sort string, skip int64, limit int6
 
 	matchStage := bson.M{db_common.MONGODB_MATCH: filterdoc}
 	stages = append(stages, matchStage)
-	// ==================================================
-
-	// Add Lookup stages ================================
-	stages = p.appendListLookups(stages)
 	// ==================================================
 
 	if len(sort) > 0 {
