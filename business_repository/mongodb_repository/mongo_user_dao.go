@@ -84,7 +84,7 @@ func (p *UserMongoDBDao) List(filter string, sort string, skip int64, limit int6
 		}
 	}
 
-	var filtercount int64 = 0
+	var filtercount int64
 	if bFilter {
 		// Prepare Filter Stages
 		filterStages := stages
