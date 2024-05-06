@@ -52,6 +52,7 @@ func (p *UserMongoDBDao) List(filter string, sort string, skip int64, limit int6
 			log.Println("Unmarshal Ext JSON error", err)
 			log.Println(filterdoc)
 		}
+		bFilter = true
 	}
 
 	// All Stages
@@ -84,7 +85,7 @@ func (p *UserMongoDBDao) List(filter string, sort string, skip int64, limit int6
 		}
 	}
 
-	var filtercount int64
+	var filtercount int64 = 0
 	if bFilter {
 		// Prepare Filter Stages
 		filterStages := stages
