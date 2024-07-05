@@ -304,7 +304,8 @@ func (p *UserMongoDBDao) Update(userid string, indata utils.Map) (utils.Map, err
 	// Update a single document
 	log.Printf("Update - Values %v", indata)
 
-	filter := bson.D{{Key: business_common.FLD_USER_ID, Value: userid}}
+	filter := bson.D{{Key: business_common.FLD_USER_ID, Value: userid},
+		{Key: db_common.FLD_IS_DELETED, Value: false}}
 	filter = append(filter, bson.E{Key: business_common.FLD_BUSINESS_ID, Value: p.businessID})
 
 	updateResult, err := collection.UpdateOne(ctx, filter, bson.D{{Key: "$set", Value: indata}})
