@@ -469,5 +469,29 @@ func (p *UserMongoDBDao) appendListLookups(stages []bson.M) []bson.M {
 
 	stages = append(stages, lookupStage)
 
+	// Lookup Stage for Department ==========================================
+	lookupStage = bson.M{
+		db_common.MONGODB_LOOKUP: bson.M{
+			db_common.MONGODB_STR_FROM:         business_common.DbBusinessUsers,
+			db_common.MONGODB_STR_LOCALFIELD:   business_common.FLD_HR_STAFF_INFO + "." + hr_common.FLD_STAFF_DATA + "." + hr_common.FLD_REPORTING_STAFF_ID,
+			db_common.MONGODB_STR_FOREIGNFIELD: business_common.FLD_USER_ID,
+			db_common.MONGODB_STR_AS:           business_common.FLD_REPORTING_STAFF_INFO,
+			db_common.MONGODB_STR_PIPELINE: []bson.M{
+				// Match BusinessId
+				{db_common.MONGODB_MATCH: bson.M{
+					business_common.FLD_BUSINESS_ID: p.businessID,
+				}},
+				// Remove following fields from result-set
+				{db_common.MONGODB_PROJECT: bson.M{
+					db_common.FLD_DEFAULT_ID: 0,
+					db_common.FLD_IS_DELETED: 0,
+					db_common.FLD_CREATED_AT: 0,
+					db_common.FLD_UPDATED_AT: 0}},
+			},
+		},
+	}
+	// //Add it to Aggregate Stage
+	stages = append(stages, lookupStage)
+
 	return stages
 }
