@@ -358,6 +358,7 @@ func (p *UserMongoDBDao) appendListLookups(stages []bson.M) []bson.M {
 				// Match BusinessId
 				{db_common.MONGODB_MATCH: bson.M{
 					business_common.FLD_BUSINESS_ID: p.businessID,
+					db_common.FLD_IS_DELETED:false,
 				}},
 				// Remove following fields from result-set
 				{db_common.MONGODB_PROJECT: bson.M{
@@ -383,6 +384,7 @@ func (p *UserMongoDBDao) appendListLookups(stages []bson.M) []bson.M {
 				// Match BusinessId
 				{db_common.MONGODB_MATCH: bson.M{
 					business_common.FLD_BUSINESS_ID: p.businessID,
+					db_common.FLD_IS_DELETED:false,
 				}},
 				// Remove following fields from result-set
 				{db_common.MONGODB_PROJECT: bson.M{
@@ -407,6 +409,7 @@ func (p *UserMongoDBDao) appendListLookups(stages []bson.M) []bson.M {
 				// Match BusinessId
 				{db_common.MONGODB_MATCH: bson.M{
 					business_common.FLD_BUSINESS_ID: p.businessID,
+					db_common.FLD_IS_DELETED:false,
 				}},
 				// Remove following fields from result-set
 				{db_common.MONGODB_PROJECT: bson.M{
@@ -431,6 +434,7 @@ func (p *UserMongoDBDao) appendListLookups(stages []bson.M) []bson.M {
 				// Match BusinessId
 				{db_common.MONGODB_MATCH: bson.M{
 					business_common.FLD_BUSINESS_ID: p.businessID,
+					db_common.FLD_IS_DELETED:false,
 				}},
 				// Remove following fields from result-set
 				{db_common.MONGODB_PROJECT: bson.M{
@@ -455,6 +459,7 @@ func (p *UserMongoDBDao) appendListLookups(stages []bson.M) []bson.M {
 				// Match BusinessId
 				{db_common.MONGODB_MATCH: bson.M{
 					business_common.FLD_BUSINESS_ID: p.businessID,
+					db_common.FLD_IS_DELETED:false,
 				}},
 				// Remove following fields from result-set
 				{db_common.MONGODB_PROJECT: bson.M{
@@ -480,6 +485,7 @@ func (p *UserMongoDBDao) appendListLookups(stages []bson.M) []bson.M {
 				// Match BusinessId
 				{db_common.MONGODB_MATCH: bson.M{
 					business_common.FLD_BUSINESS_ID: p.businessID,
+					db_common.FLD_IS_DELETED:false,
 				}},
 				// Remove following fields from result-set
 				{db_common.MONGODB_PROJECT: bson.M{
